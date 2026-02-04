@@ -5,3 +5,4 @@ export const keysRouter = Router();
 
 //routes for api key per account
 keysRouter.post("/accounts/:accountId/keys", KeysController.create);//pass the request to the controller
+keysRouter.get("/accounts/:accountId/keys", KeysController.list);
