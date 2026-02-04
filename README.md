@@ -28,7 +28,7 @@ docker compose up -d
 
 # 5. Start the server
     npm run dev
-    The server will start on: The server will start on:http://localhost:3000
+    The server will start on:http://localhost:3000
 
 
 
@@ -36,16 +36,13 @@ docker compose up -d
 
 # 1. Implement `GET /auth/verify` 
 
-**Goal:** Validate an API key sent in the x-api-key header and return { accountId, keyId } if valid and not revoked. Return 401 otherwise.
+The Goal: I want to allow clients to verify their keys by sending them in the x-api-key header. If the key is valid and hasn't been revoked, the server returns the accountId and keyId. Otherwise, it returns a 401 Unauthorized error.
 
-Architecture for Verify Key:
-Add a new route: GET /auth/verify
-
-In the controller:Read x-api-key header ,Validate it exists and is a string.,Validate format: it must contain a dot (prefix.secret).,If invalid format -> return 401 
-
-In the service: Split the key into prefix and secret,Query DB by prefix to find the key record.If not found -> 401, If revokedAt is not null -> 401, Compare secret with secret_hash using bcrypt.compare ,If compare fails -> 401 If ok -> return { accountId, keyId: id }
-
-In the repository:Add findByPrefix(prefix): SELECT ... FROM api_keys WHERE prefix = $1 LIMIT 1
+How I will build it:
+Request Handling: I'll grab the key from the x-api-key header. First, I'd check that it’s actually there and follows the prefix.secret format. If it’s messy or missing, I'll reject it immediately with a 401.
+Finding the Key: In the service layer, I'll split the key. I'll use the prefix to look up the key in the database. If the prefix doesn't exist or if the revokedAt column isn't empty, the key is invalid.
+Security Check: This is the most important part. Since I only store the hash of the secret, I'll use bcrypt.compare() to check if the secret provided by the user matches the secretHash in our DB.
+Result: If everything matches, I’ll return the IDs so the system knows exactly which account is making the request.
 
 
 # 2. Improve documentation 
