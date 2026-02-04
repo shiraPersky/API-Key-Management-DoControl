@@ -38,4 +38,26 @@ export const KeysService = {
     }));
 },
 
+async revokeKey(accountId: string, keyId: string) {
+  const row = await KeysRepository.revokeKeyById(keyId);
+
+  if (!row) {
+    throw new Error("Key not found");
+  }
+
+  if (row.accountId !== accountId) {
+    throw new Error("Key does not belong to this account");
+  }
+
+  return {
+    id: row.id,
+    accountId: row.accountId,
+    name: row.name,
+    prefix: row.prefix,
+    createdAt: row.created_at.toString(),
+    revokedAt: row.revoked_at ? row.revoked_at.toString() : null,
+  };
+},
+
+
 };
