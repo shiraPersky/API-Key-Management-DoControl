@@ -30,4 +30,25 @@ export const KeysController = {
     const keys = await KeysService.listKeys(accountId);
     return res.status(200).json({ keys });
   },
+
+  async revoke(req: Request, res: Response) {
+  const accountIdRaw = req.params.accountId;
+  const keyIdRaw = req.params.id;
+
+  if (typeof accountIdRaw !== "string" || accountIdRaw.trim().length === 0) {
+    return res.status(400).json({ error: { message: "accountId is required" } });
+  }
+
+  if (typeof keyIdRaw !== "string" || keyIdRaw.trim().length === 0) {
+    return res.status(400).json({ error: { message: "key id is required" } });
+  }
+
+  const result = await KeysService.revokeKey(
+    accountIdRaw.trim(),
+    keyIdRaw.trim()
+  );
+
+  return res.status(200).json(result);
+},
+
 };
