@@ -19,4 +19,15 @@ export const KeysController = {
     const result = await KeysService.createKey(accountId, name.trim());
     return res.status(201).json(result);
   },
+
+  async list(req: Request, res: Response) {
+    const accountIdRaw = req.params.accountId;
+    if (typeof accountIdRaw !== "string" || accountIdRaw.trim().length === 0) {
+        return res.status(400).json({ error: { message: "accountId is required" } });
+    }
+    const accountId = accountIdRaw.trim();
+
+    const keys = await KeysService.listKeys(accountId);
+    return res.status(200).json({ keys });
+  },
 };
