@@ -19,4 +19,18 @@ export const KeysRepository = {
 
     return res.rows[0];
   },
+
+  async listByAccountId(accountId: string): Promise<ApiKeyRow[]> {
+    const res = await pool.query<ApiKeyRow>(
+      `SELECT id, "accountId", name, prefix, secret_hash, created_at, revoked_at
+       FROM api_keys
+       WHERE "accountId" = $1
+       ORDER BY created_at DESC`,
+      [accountId]
+    );
+
+    return res.rows;
+  },
 };
+
+
