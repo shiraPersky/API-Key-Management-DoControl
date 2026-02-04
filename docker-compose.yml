@@ -1,8 +1,8 @@
+version: "3.8"
 
 services:
   postgres:
-    image: postgres:15-alpine
-    platform: linux/amd64
+    image: postgres:15
     container_name: api_keys_postgres
     environment:
       POSTGRES_DB: api_keys_db
@@ -13,11 +13,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   postgres_data:
