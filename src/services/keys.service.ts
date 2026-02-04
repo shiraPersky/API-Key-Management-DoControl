@@ -25,4 +25,17 @@ export const KeysService = {
 
     };
   },
+  async listKeys(accountId: string) {
+    const rows = await KeysRepository.listByAccountId(accountId);
+
+    return rows.map((row) => ({
+        id: row.id,
+        accountId: row.accountId,
+        name: row.name,
+        prefix: row.prefix,
+        createdAt: row.created_at.toString(),
+        revokedAt: row.revoked_at ? row.revoked_at.toString() : null,
+    }));
+},
+
 };
